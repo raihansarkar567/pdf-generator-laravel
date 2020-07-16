@@ -1,0 +1,63 @@
+1- Installing Package:
+  composer require barryvdh/laravel-dompdf
+  
+2- Update config/app.php
+    Add the following line to ‘providers’ array:
+    'providers' => [
+     ....
+     Barryvdh\DomPDF\ServiceProvider::class,
+    ],
+    Now add this line to ‘aliases’:
+    'aliases' => [
+     ....
+     'PDF' => Barryvdh\DomPDF\Facade::class,
+    ]
+    
+3- Update routes/web.php
+   Route::get('/customer/print-pdf','PdfController@printPDF')->name('customer.printpdf');
+
+
+4- Create Controller:
+
+    <?php
+
+      namespace App\Http\Controllers;
+
+      use Illuminate\Http\Request;
+      use PDF;
+
+      class PdfController extends Controller
+      {
+
+        public function printPDF(){
+          $data = [
+              'title' => 'First PDF for Medium',
+              'heading' => 'Hello from 99Points.info',
+              'content' => 'Lorem Ipsum is simply dummy text of the printing and . Lorem Ipsum has been the industry'
+                ];
+              $pdf = PDF::loadView('pdf_view', $data);
+              return $pdf->download('medium.pdf');
+        }
+      }
+      
+      
+      
+      
+5- Create Blade
+A blade view is something which will be rendered to our final PDF.
+Create a view pdf_view.blade.php in \resources\views\
+        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        <html xmlns="http://www.w3.org/1999/xhtml">
+        <head>
+         <title>{{ $title }}</title>
+        </head>
+        <body>
+          <h1>{{ $heading}}</h1>
+          <div>
+             <p>{{$content}}</p>
+          </div>
+        </body>
+        </body>
+        </html>
+ 
+ run browser  http://127.0.0.1:8000/customer/print-pdf
